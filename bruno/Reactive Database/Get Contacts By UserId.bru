@@ -1,0 +1,15 @@
+meta {
+  name: Get Contacts By UserId
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:9008/db-api/user-contacts/:userId
+  body: none
+  auth: none
+}
+
+params:path {
+  userId: 2
+}

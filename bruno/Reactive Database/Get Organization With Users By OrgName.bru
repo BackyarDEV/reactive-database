@@ -1,0 +1,15 @@
+meta {
+  name: Get Organization With Users By OrgName
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://localhost:9008/db-api/org-with-users/:orgName
+  body: none
+  auth: none
+}
+
+params:path {
+  orgName: Spacejam
+}
