@@ -9,11 +9,13 @@ import com.backyardev.reactivedatabase.model.User;
 import com.backyardev.reactivedatabase.model.UserContact;
 import com.backyardev.reactivedatabase.service.DatabaseService;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.smallrye.mutiny.Uni;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/db-api")
@@ -33,32 +35,32 @@ public class DatabaseController {
     private DatabaseService databaseService;
 
     @GetMapping(path = "/users")
-    public Flux<User> getUsers() {
+    public Uni<List<User>> getUsers() {
         return userDAO.getUsers();
     }
 
     @GetMapping(path = "/users/{username}")
-    public Mono<User> getUserByName(@PathVariable(value = "username") String username) {
+    public Uni<User> getUserByName(@PathVariable(value = "username") String username) {
         return userDAO.findByUsername(username);
     }
 
     @GetMapping(path = "/organizations")
-    public Flux<Organization> getOrganizations() {
+    public Uni<List<Organization>> getOrganizations() {
         return organizationDAO.getOrganizations();
     }
 
     @GetMapping(path = "/organizations/{orgName}")
-    public Mono<Organization> getOrganizationByName(@PathVariable(value = "orgName") String orgName) {
+    public Uni<Organization> getOrganizationByName(@PathVariable(value = "orgName") String orgName) {
         return databaseService.getOrgIdFromOrgName(orgName);
     }
 
     @GetMapping(path = "/user-contacts")
-    public Flux<UserContact> getUserContacts() {
+    public Uni<List<UserContact>> getUserContacts() {
         return userContactDAO.getUserContacts();
     }
 
     @GetMapping(path = "/user-contacts/{userId}")
-    public Flux<UserContact> getUserContactsByName(@PathVariable(value = "userId") Integer userId) throws ReactiveAppException {
+    public Uni<List<UserContact>> getUserContactsByName(@PathVariable(value = "userId") Integer userId) throws ReactiveAppException {
         return userContactDAO.findByUserId(userId);
     }
 
