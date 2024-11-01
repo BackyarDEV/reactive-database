@@ -4,30 +4,5 @@
              version="3.0">
     <persistence-unit name="backyardPU">
         <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
-        <class>com.backyardev.reactivedatabase.model.User</class>
-        <properties>
-            <!-- MSSQL -->
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:mssql://localhost:1433/backyard"/>
-            <!-- Credentials -->
-            <property name="jakarta.persistence.jdbc.user"
-                      value="botn0ught"/>
-            <property name="jakarta.persistence.jdbc.password"
-                      value="err0r.4O4"/>
-
-            <!-- The Vert.x SQL Client connection pool size -->
-            <property name="hibernate.connection.pool_size"
-                      value="10"/>
-
-            <!-- Automatic schema export -->
-<!--            <property name="jakarta.persistence.schema-generation.database.action"-->
-<!--                      value="drop-and-create"/>-->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
-
-            <!-- SQL statement logging -->
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.highlight_sql" value="true"/>
-        </properties>
     </persistence-unit>
 </persistence>
