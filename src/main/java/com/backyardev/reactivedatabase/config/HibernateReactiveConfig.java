@@ -1,17 +1,19 @@
 package com.backyardev.reactivedatabase.config;
 
 import jakarta.persistence.Persistence;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.reactive.mutiny.Mutiny;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.*;
 
 import java.util.HashMap;
-
-import static org.hibernate.cfg.JdbcSettings.*;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration(proxyBeanMethods = false)
+@Slf4j
 public class HibernateReactiveConfig {
     static final String DEFAULT_PERSISTENCE_UNIT_NAME = "backyardPU";
 
@@ -20,15 +22,20 @@ public class HibernateReactiveConfig {
 
     @Bean
     public Mutiny.SessionFactory sessionFactory() {
-        var properties = new HashMap<String,String>();
-        properties.put(JAKARTA_JDBC_URL, environment.getProperty(JAKARTA_JDBC_URL));
-        properties.put(JAKARTA_JDBC_USER, environment.getProperty(JAKARTA_JDBC_USER));
-        properties.put(JAKARTA_JDBC_PASSWORD, environment.getProperty(JAKARTA_JDBC_PASSWORD));
-        properties.put(POOL_SIZE, environment.getProperty(POOL_SIZE));
-        properties.put(SHOW_SQL, environment.getProperty(SHOW_SQL));
-        properties.put(FORMAT_SQL, environment.getProperty(FORMAT_SQL));
-        properties.put(HIGHLIGHT_SQL, environment.getProperty(HIGHLIGHT_SQL));
-        return Persistence.createEntityManagerFactory(DEFAULT_PERSISTENCE_UNIT_NAME, properties)
+        return Persistence.createEntityManagerFactory(DEFAULT_PERSISTENCE_UNIT_NAME, getProperties())
             .unwrap(Mutiny.SessionFactory.class);
+    }
+
+    private Map<String, String> getProperties() {
+        var properties = new HashMap<String, String>();
+        for (var source : ((AbstractEnvironment) environment).getPropertySources())
+            if (source.getName().contains("Config resource"))
+                properties.putAll(((MapPropertySource) source).getSource().entrySet().stream().collect(Collectors.toMap(
+                        Map.Entry::getKey, this::getEnvValues)));
+        return properties;
+    }
+
+    private String getEnvValues(Map.Entry entry) {
+        return environment.getProperty(String.valueOf(entry.getKey()));
     }
 }
